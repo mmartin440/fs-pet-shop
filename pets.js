@@ -67,21 +67,19 @@ switch(subcommand) {
         }
         break; 
     case 'destroy':
-        const destoryIndex = process.argv[3];
-        if(index === undefined ){
-            console.log('Usage: node pets.js destroy Index'); 
-            process.exit(1)
+        const destroyIndex = process.argv[3];
             readFile('pets.json', 'utf-8').then(str => { // we using readFile again because we want to push new info into the data
                 const data = JSON.parse(str);
                 
-                 if(data[destoryIndex]) {
-                    let deletePet = data[destoryIndex]; 
-                    delete(deletePet); 
-                 }
-                const newData = JSON.stringify(data) // the new data we need to convert it back to what was before we parsed it 
-                writeFile('pets.json', newData).then(() =>{}) // then writeFile updates the new information back into the file you wanted to update
+                if(destroyIndex === undefined || data[destroyIndex ] === undefined ){ // verifying if not given an index or if the index given is not in the array
+                    console.log('Usage: node pets.js destroy Index'); 
+                    process.exit(1)
+                } else {
+                    data.splice(destroyIndex, 1) // splice removes one item in the array 
+                    const newData = JSON.stringify(data) // the new data we need to convert it back to what was before we parsed it 
+                    writeFile('pets.json', newData).then(() =>{}) // then writeFile updates the new information back into the file you wanted to update
+                }         
         }); 
-        }
         break; 
     default: {
         console.log('Usage: node pets.js [read | create | update | destroy]'); 
