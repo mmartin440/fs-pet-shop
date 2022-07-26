@@ -11,7 +11,7 @@ const unkownHttp = ((req, res, next) => {
 })
 
 // .get itself is async and promise it self is async the dot then on promise is just an attachment to the async 
-app.get('/pets', (req, res, next) => {
+app.get('/pets', (req, res, next) => { // app.get() is kind of a event listener 
     readPetsFile().then((data) => {
         // console.log('data', data); 
         res.send(data); 
@@ -54,6 +54,8 @@ app.post('/pets', (req, res , next) => {
     })
    .catch(next); 
 }); 
+
+
 
 app.use((err, req, res, next) => {
     res.sendStatus(500); 
