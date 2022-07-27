@@ -2,13 +2,11 @@ import express from  'express'
 import { readPetsFile } from './shared.js'
 import fs from 'fs/promises'
 
+
+
 const app = express(); 
 const PORT = 3000; 
 app.use(express.json()); 
-const unkownHttp = ((req, res, next) => {
-    res.sendStatus(404); 
-    next(); 
-})
 
 
 app.get('/pets', (req, res, next) => { 
@@ -28,6 +26,7 @@ app.get('/pets/:index', (req, res , next) => {
             res.send(data[index]); 
         } else {
             res.status(404).send(`INDEX ${index} NOT FOUND`); 
+            console.log('app.get at index passed 404'); 
         }
     })
     .catch(next); 
@@ -43,13 +42,11 @@ app.post('/pets', (req, res , next) => {
             return fs 
             .writeFile('pets.json', JSON.stringify(data)).then( () =>{ 
                 res.set('Content-type', 'application/json')
-                res.status(201).send(`Pet you have submitted: ${JSON.stringify(newPet)}`); 
-               
-                
+                res.status(201).send(`Pet you have submitted: ${JSON.stringify(newPet)}`);  
             }) 
         } else {
                  
-            res.sendStatus(400)     
+            res.sendStatus(400)    // bad request 
         }
     })
    .catch(next); 
@@ -60,10 +57,8 @@ app.patch('/pets/:index', (req, res, next) => {
     const update = req.body
     // console.log('index', index);
     // console.log('update', update);
-    // console.log('key update', Object.keys(update));
-
+    // convert tp number
     readPetsFile().then((data) => { 
-        // console.log('key data', Object.keys(data[index]));
         if(data[index]) {
               if (update.age){
                 data[index].age = update.age;
@@ -114,4 +109,11 @@ app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`); 
 })
 
-app.use(unkownHttp); 
+
+// const unkownHttp = ((req, res, next) => {
+//     res.sendStatus(404); // not found 404 
+//     console.log('unknowHttp was used 404')
+//     next(); 
+// })
+
+// app.use(unkownHttp); 
